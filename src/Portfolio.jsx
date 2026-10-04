@@ -27,20 +27,55 @@ const codeLines = [
   '}',
 ]
 
-const reviews = Array.from({ length: 6 }, (_, index) => ({
-  id: index + 1,
-  rating: [5, 4, 4.5][index % 3],
-  name: 'Client name',
-  designation: 'Client designation',
-  text: 'Add an approved client review here. This placeholder will be replaced with genuine feedback before publishing.',
-}))
+const reviews = [
+  {
+    id: 1,
+    project: 'E-COMMERCE WEBSITE',
+    rating: 5,
+    name: 'Rohit Bucha',
+    designation: 'Founder',
+    text: 'Arindam transformed our website into a much more professional and user-friendly experience. The responsive design is excellent, and he paid close attention to every detail. Communication was smooth throughout the project.',
+  },
+  {
+    id: 2,
+    project: 'REACT DEVELOPMENT',
+    rating: 4,
+    name: 'Siddharth',
+    designation: 'Co-Founder',
+    text: 'Working with Arindam was a great experience. He understood our requirements quickly and delivered a clean, modern React interface that works beautifully across desktop and mobile. Highly recommended for frontend development.',
+  },
+  {
+    id: 3,
+    project: 'WORDPRESS DEVELOPMENT',
+    rating: 4.5,
+    name: 'Shrijit Chakraborty',
+    designation: 'Founder',
+    text: 'Arindam did an excellent job developing our WordPress website. The website looks professional, loads smoothly, and is easy to manage. He was patient with revisions and made sure everything worked exactly as expected.',
+  },
+  {
+    id: 4,
+    project: 'SHOPIFY DEVELOPMENT',
+    rating: 5,
+    name: 'Gaurav',
+    designation: 'Founder',
+    text: 'We needed a customized Shopify experience rather than a standard theme, and Arindam delivered exactly what we were looking for. The design feels unique, the shopping experience is smooth, and the attention to detail was impressive.',
+  },
+  {
+    id: 5,
+    project: 'WEBSITE UI / UX',
+    rating: 4,
+    name: 'Rohit Bucha',
+    designation: 'Founder',
+    text: 'Arindam is highly skilled at turning ideas into clean and modern websites. He understood our vision and created a responsive interface that looks great on every device. Professional, creative, and easy to work with.',
+  },
+]
 
 const freelancePackages = [
   {
     number: '01',
     name: 'Landing page',
     Icon: Code2,
-    price: '₹18,000+',
+    price: '₹9,000+',
     description: 'A focused, polished page for a product, service, or campaign.',
     features: ['Single-page responsive build', 'Contact form integration', 'On-page SEO fundamentals'],
   },
@@ -48,7 +83,7 @@ const freelancePackages = [
     number: '02',
     name: 'Business website',
     Icon: Globe2,
-    price: '₹45,000+',
+    price: '₹20,000+',
     description: 'A flexible multi-page site that gives your business room to grow.',
     features: ['Up to five core pages', 'WordPress or Wix setup', 'Responsive UI and SEO basics'],
   },
@@ -56,9 +91,9 @@ const freelancePackages = [
     number: '03',
     name: 'E-commerce store',
     Icon: ShoppingBag,
-    price: '₹75,000+',
+    price: '₹30,000+',
     description: 'A product-first storefront with a considered path to checkout.',
-    features: ['Shopify, Wix, or Magento setup', 'Catalogue and checkout integration', 'Mobile-first storefront UI'],
+    features: ['Shopify or WordPress setup', 'Catalogue and checkout integration', 'Mobile-first storefront UI'],
   },
 ]
 
@@ -155,7 +190,7 @@ function Hero() {
       <div className="hero-visual" aria-label="Website and storefront concept">
         <div className="visual-topline"><span>BUILD / SHIP / ITERATE</span><span>EST. 2014 — NOW</span></div>
         <div className="visual-photo">
-          <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1100&q=75" alt="Illustrative engineering team collaborating over a project" fetchPriority="high" />
+          <img src="/images/hero-banner.jpg" alt="Illustrative engineering team collaborating over a project" fetchPriority="high" />
           <span className="visual-stamp">BUILT<br />WITH<br /><i>INTENT.</i></span>
           <span className="visual-code"><span>const</span> experience = <b>"thoughtful"</b>;</span>
         </div>
@@ -459,7 +494,7 @@ function Reviews() {
                 aria-hidden={activeReview !== index}
                 aria-roledescription="slide"
               >
-                <div className="review-card-top"><span className="review-placeholder-label">REVIEW PLACEHOLDER</span><span className="review-stars-display" aria-label={`${item.rating} out of 5 sample stars`}>{[1, 2, 3, 4, 5].map((star) => <span className={star <= item.rating ? 'review-card-star is-filled' : star - item.rating === 0.5 ? 'review-card-star is-half' : 'review-card-star'} key={star}><Star size={16} aria-hidden="true" />{star - item.rating === 0.5 && <Star className="review-card-star-half" size={16} aria-hidden="true" />}</span>)}</span></div>
+                <div className="review-card-top"><span className="review-placeholder-label">{String(item.id).padStart(2, '0')} — {item.project}</span><span className="review-stars-display" aria-label={`${item.rating} out of 5 stars`}>{[1, 2, 3, 4, 5].map((star) => <span className={star <= item.rating ? 'review-card-star is-filled' : star - item.rating === 0.5 ? 'review-card-star is-half' : 'review-card-star'} key={star}><Star size={16} aria-hidden="true" />{star - item.rating === 0.5 && <Star className="review-card-star-half" size={16} aria-hidden="true" />}</span>)}</span></div>
                 <blockquote>{item.text}</blockquote>
                 <div className="reviewer">
                   <span className="reviewer-avatar" aria-hidden="true"><UserRound size={22} /></span>
@@ -483,17 +518,17 @@ function Reviews() {
         <div className="reviews-intro">
           <p className="reviews-eyebrow">CLIENT FEEDBACK</p>
           <h2 id="reviews-title">KIND WORDS<br /><span>FROM CLIENTS.</span></h2>
-          <p>Thoughts from the people I’ve worked with. Review cards are placeholders until approved client feedback is added.</p>
+          <p>Client feedback from projects across e-commerce, React, WordPress, Shopify, and website UI/UX.</p>
           <div className="reviews-rating-summary">
             <span className="reviews-rating-number">{reviews[activeReview].rating.toFixed(1)}</span>
             <span className="reviews-rating-detail">
               <span className="reviews-rating-stars" aria-label={`${reviews[activeReview].rating} out of 5 illustrative stars`}>
                 {[1, 2, 3, 4, 5].map((star) => <span className={star <= reviews[activeReview].rating ? 'review-card-star is-filled' : star - reviews[activeReview].rating === 0.5 ? 'review-card-star is-half' : 'review-card-star'} key={star}><Star size={18} aria-hidden="true" />{star - reviews[activeReview].rating === 0.5 && <Star className="review-card-star-half" size={18} aria-hidden="true" />}</span>)}
               </span>
-              <span className="reviews-rating-caption">Illustrative score · replace with verified review</span>
+              <span className="reviews-rating-caption">CLIENT RATING · {reviews[activeReview].project}</span>
             </span>
           </div>
-          <div className="reviews-note"><Star size={16} fill="currentColor" aria-hidden="true" /><span>Genuine reviews will be shown with permission.</span></div>
+          <div className="reviews-note"><Star size={16} fill="currentColor" aria-hidden="true" /><span>Feedback from completed client projects.</span></div>
           <div className="reviews-controls">
             <button type="button" aria-label="Previous review" onClick={() => changeReview(-1)}><ChevronLeft size={19} aria-hidden="true" /></button>
             <span>{String(activeReview + 1).padStart(2, '0')} <i>/</i> {String(reviews.length).padStart(2, '0')}</span>
