@@ -1,19 +1,39 @@
 import { useEffect, useRef, useState } from 'react'
-import { Atom, Braces, Code2, FileCode2, Globe2, Layers3, PanelsTopLeft, ChevronDown, ShoppingBag, X, Sun, Moon } from 'lucide-react'
+import { Code2, Globe2, ChevronDown, ShoppingBag, X, Sun, Moon, Star, UserRound, ChevronLeft, ChevronRight } from 'lucide-react'
+import { siReact, siJavascript, siHtml5, siCss, siTailwindcss, siWordpress, siWix, siShopify, siWhatsapp } from 'simple-icons'
 import CV from './CV.jsx'
 import { featuredProjects as projects } from './projects.js'
 
 const skills = [
-  { name: 'React', Icon: Atom, description: 'Build reusable UI from focused components. Add interactive states while keeping larger pages structured and easy to extend.' },
-  { name: 'JavaScript', Icon: Braces, description: 'Bring interfaces to life with modern JavaScript. Handle events, state, and the small interactions that make a site feel responsive.' },
-  { name: 'HTML5', Icon: FileCode2, description: 'Create semantic page structure that is easier to navigate. Use accessible markup to give browsers and assistive technology clear meaning.' },
-  { name: 'CSS3', Icon: Code2, description: 'Shape layouts that adapt from mobile to desktop. Use modern CSS for clear visual hierarchy, transitions, and polished details.' },
-  { name: 'Tailwind CSS', Icon: Layers3, description: 'Build consistent interfaces with utility-first styling. Reuse design tokens and iterate on responsive layouts quickly.' },
-  { name: 'WordPress', Icon: Globe2, description: 'Create and customize content-driven websites. Structure pages so common updates stay manageable for the people who run the site.' },
-  { name: 'Wix', Icon: PanelsTopLeft, description: 'Build and refine responsive Wix websites. Organize pages and content into a clean experience that is straightforward to maintain.' },
+  { name: 'React', brandIcon: siReact, brandColor: '#61DAFB', description: 'Build reusable UI from focused components. Add interactive states while keeping larger pages structured and easy to extend.' },
+  { name: 'JavaScript', brandIcon: siJavascript, brandColor: '#F7DF1E', description: 'Bring interfaces to life with modern JavaScript. Handle events, state, and the small interactions that make a site feel responsive.' },
+  { name: 'HTML5', brandIcon: siHtml5, brandColor: '#E34F26', description: 'Create semantic page structure that is easier to navigate. Use accessible markup to give browsers and assistive technology clear meaning.' },
+  { name: 'CSS3', brandIcon: siCss, brandColor: '#1572B6', description: 'Shape layouts that adapt from mobile to desktop. Use modern CSS for clear visual hierarchy, transitions, and polished details.' },
+  { name: 'Tailwind CSS', brandIcon: siTailwindcss, brandColor: '#06B6D4', description: 'Build consistent interfaces with utility-first styling. Reuse design tokens and iterate on responsive layouts quickly.' },
+  { name: 'WordPress', brandIcon: siWordpress, brandColor: '#21759B', description: 'Create and customize content-driven websites. Structure pages so common updates stay manageable for the people who run the site.' },
+  { name: 'Wix', brandIcon: siWix, brandColor: '#0C6EFC', description: 'Build and refine responsive Wix websites. Organize pages and content into a clean experience that is straightforward to maintain.' },
   { name: 'E-commerce', Icon: ShoppingBag, description: 'Design storefront experiences around products and clear next steps. Keep browsing, product details, and checkout easy to follow.' },
-  { name: 'Shopify Custom Theme Design', Icon: PanelsTopLeft, description: 'Three years of experience customizing Shopify themes, shaping storefront sections, styling, and responsive shopping details for each brand.' },
+  { name: 'Shopify Custom Theme Design', brandIcon: siShopify, brandColor: '#95BF47', description: 'Three years of experience customizing Shopify themes, shaping storefront sections, styling, and responsive shopping details for each brand.' },
 ]
+
+const codeLines = [
+  'const developer = {',
+  "  name: 'Arindam Chakraborty',",
+  "  role: 'Lead Frontend Developer',",
+  '  experience: 10,',
+  "  tools: ['React', 'JavaScript'],",
+  "  platforms: ['Shopify', 'WordPress'],",
+  "  focus: 'Thoughtful digital experiences',",
+  '}',
+]
+
+const reviews = Array.from({ length: 6 }, (_, index) => ({
+  id: index + 1,
+  rating: [5, 4, 4.5][index % 3],
+  name: 'Client name',
+  designation: 'Client designation',
+  text: 'Add an approved client review here. This placeholder will be replaced with genuine feedback before publishing.',
+}))
 
 const freelancePackages = [
   {
@@ -69,6 +89,14 @@ function useReveal() {
 
 function ArrowIcon() {
   return <span aria-hidden="true" className="arrow-icon">↗</span>
+}
+
+function BrandIcon({ icon, color, size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false" style={{ color }}>
+      <path d={icon.path} />
+    </svg>
+  )
 }
 
 function Header({ theme, onThemeToggle }) {
@@ -225,41 +253,104 @@ function Projects() {
 function Toolkit() {
   const revealRef = useReveal()
   const [expandedSkill, setExpandedSkill] = useState(null)
+  const [activeCodeLine, setActiveCodeLine] = useState(0)
+
+  useEffect(() => {
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let timer
+
+    const startAnimation = () => {
+      if (motionPreference.matches || timer) return
+      timer = window.setInterval(() => {
+        setActiveCodeLine((line) => (line + 1) % codeLines.length)
+      }, 700)
+    }
+    const stopAnimation = () => {
+      window.clearInterval(timer)
+      timer = undefined
+    }
+    const updateAnimation = () => {
+      if (motionPreference.matches) stopAnimation()
+      else startAnimation()
+    }
+
+    startAnimation()
+    motionPreference.addEventListener('change', updateAnimation)
+
+    return () => {
+      stopAnimation()
+      motionPreference.removeEventListener('change', updateAnimation)
+    }
+  }, [])
 
   return (
     <section className="toolkit-section" aria-labelledby="toolkit-title">
       <div className="toolkit-inner section-shell reveal" ref={revealRef}>
         <div className="section-marker"><span>03</span><span>FRONTEND TOOLKIT</span></div>
+        <div className="toolkit-marquee" aria-label="Technologies and platforms">
+          <div className="toolkit-marquee-track" aria-hidden="true">
+            {[0, 1].map((group) => (
+              <div className="toolkit-marquee-group" key={group}>
+                {skills.map(({ name, Icon, brandIcon, brandColor }) => (
+                  <span className="toolkit-marquee-item" key={name}>
+                    {brandIcon
+                      ? <BrandIcon icon={brandIcon} color={brandColor} size={21} />
+                      : <Icon size={21} strokeWidth={1.8} />}
+                    {name}
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
         <div className="toolkit-layout">
-          <div><h2 id="toolkit-title">TOOLS FOR<br /><span>THE CRAFT.</span></h2><p>A decade of hands-on work across frontend engineering, content platforms, performance, and e-commerce.</p></div>
-          <ul className="skill-list">
-            {skills.map(({ name, Icon, description }, index) => {
-              const isExpanded = expandedSkill === index
-              const triggerId = `skill-trigger-${index}`
-              const detailId = `skill-detail-${index}`
+          <div className="toolkit-copy">
+            <h2 id="toolkit-title">WHAT I DO<span>?</span></h2>
+            <p>A decade of hands-on work across frontend engineering, content platforms, performance, and e-commerce.</p>
+            <ul className="skill-list">
+              {skills.map(({ name, Icon, description, brandIcon, brandColor }, index) => {
+                const isExpanded = expandedSkill === index
+                const triggerId = `skill-trigger-${index}`
+                const detailId = `skill-detail-${index}`
 
-              return (
-                <li className={isExpanded ? 'skill-item is-expanded' : 'skill-item'} key={name}>
-                  <button
-                    className="skill-trigger"
-                    id={triggerId}
-                    type="button"
-                    aria-expanded={isExpanded}
-                    aria-controls={detailId}
-                    onClick={() => setExpandedSkill(isExpanded ? null : index)}
-                  >
-                    <span className="skill-number">0{index + 1}</span>
-                    <span className="skill-icon" aria-hidden="true"><Icon size={17} strokeWidth={1.7} /></span>
-                    <span className="skill-name">{name}</span>
-                    <ChevronDown className="skill-chevron" size={16} aria-hidden="true" />
-                  </button>
-                  <div className="skill-details" id={detailId} aria-labelledby={triggerId} aria-hidden={!isExpanded}>
-                    <div className="skill-details-inner"><p>{description}</p></div>
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
+                return (
+                  <li className={isExpanded ? 'skill-item is-expanded' : 'skill-item'} key={name}>
+                    <button
+                      className="skill-trigger"
+                      id={triggerId}
+                      type="button"
+                      aria-expanded={isExpanded}
+                      aria-controls={detailId}
+                      onClick={() => setExpandedSkill(isExpanded ? null : index)}
+                    >
+                      <span className="skill-icon" aria-hidden="true">
+                        {brandIcon
+                          ? <BrandIcon icon={brandIcon} color={brandColor} size={17} />
+                          : <Icon size={17} strokeWidth={1.7} />}
+                      </span>
+                      <span className="skill-name">{name}</span>
+                      <ChevronDown className="skill-chevron" size={16} aria-hidden="true" />
+                    </button>
+                    <div className="skill-details" id={detailId} aria-labelledby={triggerId} aria-hidden={!isExpanded}>
+                      <div className="skill-details-inner"><p>{description}</p></div>
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+          <div className="toolkit-code" aria-hidden="true">
+            <div className="toolkit-code-header"><span><i /> LIVE CODE / PROFILE.JS</span><span>REACT</span></div>
+            <pre>
+              {codeLines.map((line, index) => (
+                <span className={activeCodeLine === index ? 'toolkit-code-line is-active' : 'toolkit-code-line'} key={line}>
+                  <span className="toolkit-code-number">{String(index + 1).padStart(2, '0')}</span>
+                  <code>{line}</code>
+                </span>
+              ))}
+            </pre>
+            <div className="toolkit-code-footer"><span>10+ YEARS BUILDING FOR THE WEB</span><span>{String(activeCodeLine + 1).padStart(2, '0')} / {String(codeLines.length).padStart(2, '0')}</span></div>
+          </div>
         </div>
       </div>
     </section>
@@ -301,11 +392,117 @@ function Contact() {
   return (
     <section className="contact-section" id="contact">
       <div className="contact-inner section-shell reveal" ref={revealRef}>
-        <div className="section-marker"><span>06</span><span>THE NEXT STEP</span></div>
+        <div className="section-marker"><span>07</span><span>THE NEXT STEP</span></div>
         <p className="contact-prelude">HAVE AN IDEA?</p>
         <h2>LET'S MAKE<br /><span>IT HAPPEN.</span></h2>
         <div className="contact-bottom"><p>Have a demanding brief and an appetite for details? Let's turn it into an experience worth spending time with.</p><a className="contact-button" href="mailto:arindam23@live.com?subject=Frontend%20project%20inquiry">START A CONVERSATION <ArrowIcon /></a></div>
         <span className="contact-orbit" aria-hidden="true">A<span>.</span></span>
+      </div>
+    </section>
+  )
+}
+
+function WhatsAppButton() {
+  const message = encodeURIComponent("Hi Arindam, I saw your portfolio and would like to discuss a project.")
+
+  return (
+    <a
+      className="whatsapp-float"
+      href={`https://wa.me/919038769216?text=${message}`}
+      target="_blank"
+      rel="noreferrer"
+      aria-label="Message Arindam on WhatsApp"
+      title="Chat on WhatsApp"
+    >
+      <BrandIcon icon={siWhatsapp} color="currentColor" size={25} />
+    </a>
+  )
+}
+
+function Reviews() {
+  const revealRef = useReveal()
+  const [activeReview, setActiveReview] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+
+  useEffect(() => {
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (motionPreference.matches || isPaused) return undefined
+
+    const timer = window.setInterval(() => {
+      setActiveReview((index) => (index + 1) % reviews.length)
+    }, 5500)
+
+    return () => window.clearInterval(timer)
+  }, [isPaused])
+
+  const changeReview = (direction) => {
+    setActiveReview((index) => (index + direction + reviews.length) % reviews.length)
+  }
+
+  return (
+    <section className="reviews-section section-shell reveal" id="reviews" aria-labelledby="reviews-title" ref={revealRef}>
+      <div className="reviews-layout">
+        <div
+          className="review-carousel"
+          aria-label="Client review carousel"
+          aria-roledescription="carousel"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onFocus={() => setIsPaused(true)}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) setIsPaused(false)
+          }}
+        >
+          <div className="review-track" style={{ '--active-review': activeReview }}>
+            {reviews.map((item, index) => (
+              <article
+                className="review-card"
+                key={item.id}
+                aria-label={`Review ${index + 1} of ${reviews.length}`}
+                aria-hidden={activeReview !== index}
+                aria-roledescription="slide"
+              >
+                <div className="review-card-top"><span className="review-placeholder-label">REVIEW PLACEHOLDER</span><span className="review-stars-display" aria-label={`${item.rating} out of 5 sample stars`}>{[1, 2, 3, 4, 5].map((star) => <span className={star <= item.rating ? 'review-card-star is-filled' : star - item.rating === 0.5 ? 'review-card-star is-half' : 'review-card-star'} key={star}><Star size={16} aria-hidden="true" />{star - item.rating === 0.5 && <Star className="review-card-star-half" size={16} aria-hidden="true" />}</span>)}</span></div>
+                <blockquote>{item.text}</blockquote>
+                <div className="reviewer">
+                  <span className="reviewer-avatar" aria-hidden="true"><UserRound size={22} /></span>
+                  <span className="reviewer-copy"><strong>{item.name}</strong><span>{item.designation}</span></span>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className="review-carousel-dots" aria-label="Choose a review">
+            {reviews.map((item, index) => (
+              <button
+                key={item.id}
+                type="button"
+                aria-label={`Show review ${index + 1}`}
+                aria-current={activeReview === index ? 'true' : undefined}
+                onClick={() => setActiveReview(index)}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="reviews-intro">
+          <p className="reviews-eyebrow">CLIENT FEEDBACK</p>
+          <h2 id="reviews-title">KIND WORDS<br /><span>FROM CLIENTS.</span></h2>
+          <p>Thoughts from the people I’ve worked with. Review cards are placeholders until approved client feedback is added.</p>
+          <div className="reviews-rating-summary">
+            <span className="reviews-rating-number">{reviews[activeReview].rating.toFixed(1)}</span>
+            <span className="reviews-rating-detail">
+              <span className="reviews-rating-stars" aria-label={`${reviews[activeReview].rating} out of 5 illustrative stars`}>
+                {[1, 2, 3, 4, 5].map((star) => <span className={star <= reviews[activeReview].rating ? 'review-card-star is-filled' : star - reviews[activeReview].rating === 0.5 ? 'review-card-star is-half' : 'review-card-star'} key={star}><Star size={18} aria-hidden="true" />{star - reviews[activeReview].rating === 0.5 && <Star className="review-card-star-half" size={18} aria-hidden="true" />}</span>)}
+              </span>
+              <span className="reviews-rating-caption">Illustrative score · replace with verified review</span>
+            </span>
+          </div>
+          <div className="reviews-note"><Star size={16} fill="currentColor" aria-hidden="true" /><span>Genuine reviews will be shown with permission.</span></div>
+          <div className="reviews-controls">
+            <button type="button" aria-label="Previous review" onClick={() => changeReview(-1)}><ChevronLeft size={19} aria-hidden="true" /></button>
+            <span>{String(activeReview + 1).padStart(2, '0')} <i>/</i> {String(reviews.length).padStart(2, '0')}</span>
+            <button type="button" aria-label="Next review" onClick={() => changeReview(1)}><ChevronRight size={19} aria-hidden="true" /></button>
+          </div>
+        </div>
       </div>
     </section>
   )
@@ -364,8 +561,10 @@ export default function Portfolio() {
         <Toolkit />
         <FreelancePricing />
         <CV />
+        <Reviews />
         <Contact />
       </main>
+      <WhatsAppButton />
       <Footer />
       <BottomNav />
     </div>
