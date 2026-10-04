@@ -1261,38 +1261,6 @@ body::before { will-change: transform; animation-name: particle-drift-composited
   .whatsapp-float { transition: none; }
 }
 
-.site-footer {
-  position: relative;
-  min-height: 90px;
-  align-items: flex-end;
-  padding-bottom: 0;
-  background: #0d2023;
-  box-shadow: 0 0 0 100vmax #0d2023;
-  color: #f5f5ed;
-}
 .contact-inner > .section-marker { position: relative; z-index: 2; margin-bottom: 88px; color: #a5b5af; }
 .contact-inner > .section-marker > span:first-child { color: var(--green); }
 :root[data-theme='dark'] .contact-inner > .section-marker > span:first-child { color: var(--green); }
-.site-footer .wordmark { color: #f5f5ed; }
-.site-footer .wordmark span { color: var(--green); }
-.site-footer > p { color: #adbfbd; }
-.site-footer .back-top { color: var(--green); }
-:root[data-theme='light'] .site-footer,
-:root[data-theme='dark'] .site-footer { background: #0d2023; color: #f5f5ed; }
-:root[data-theme='light'] .site-footer .wordmark,
-:root[data-theme='dark'] .site-footer .wordmark { color: #f5f5ed; }
-:root[data-theme='light'] .site-footer > p,
-:root[data-theme='dark'] .site-footer > p { color: #adbfbd; }
-:root[data-theme='light'] .site-footer .back-top,
-:root[data-theme='dark'] .site-footer .back-top { color: var(--green); }
-@media (max-width: 650px) {
-  .site-footer {
-    min-height: 90px;
-    flex-wrap: nowrap;
-    gap: 12px;
-    padding-block: 0;
-  }
-  .site-footer .wordmark { font-size: 23px; }
-  .site-footer > p { font-size: 8px; letter-spacing: 0.35px; text-align: center; }
-  .site-footer .back-top { font-size: 8px; white-space: nowrap; }
-}
