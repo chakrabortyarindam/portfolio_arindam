@@ -387,12 +387,10 @@ function FreelancePricing() {
 }
 
 function Contact() {
-  const revealRef = useReveal()
-
   return (
     <section className="contact-section" id="contact">
-      <div className="contact-inner section-shell reveal" ref={revealRef}>
-        <div className="section-marker"><span>07</span><span>THE NEXT STEP</span></div>
+      <div className="contact-inner section-shell">
+        <div className="section-marker"><span>06</span><span>THE NEXT STEP</span></div>
         <p className="contact-prelude">HAVE AN IDEA?</p>
         <h2>LET'S MAKE<br /><span>IT HAPPEN.</span></h2>
         <div className="contact-bottom"><p>Have a demanding brief and an appetite for details? Let's turn it into an experience worth spending time with.</p><a className="contact-button" href="mailto:arindam23@live.com?subject=Frontend%20project%20inquiry">START A CONVERSATION <ArrowIcon /></a></div>
@@ -420,7 +418,6 @@ function WhatsAppButton() {
 }
 
 function Reviews() {
-  const revealRef = useReveal()
   const [activeReview, setActiveReview] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
 
@@ -440,7 +437,7 @@ function Reviews() {
   }
 
   return (
-    <section className="reviews-section section-shell reveal" id="reviews" aria-labelledby="reviews-title" ref={revealRef}>
+    <section className="reviews-section section-shell" id="reviews" aria-labelledby="reviews-title">
       <div className="reviews-layout">
         <div
           className="review-carousel"
