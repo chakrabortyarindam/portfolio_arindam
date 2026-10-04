@@ -718,7 +718,7 @@ body {
 .hero-bottom { max-width: 500px; margin-top: 25px; gap: 20px; }
 .hero-bottom p { max-width: 440px; color: #59625c; font-size: 17px; line-height: 1.7; }
 .hero-link { color: #347f74; border-color: #54b8a5; font-size: 11px; }
-.visual-topline, .visual-bottom { color: #555e58; font-size: 9px; }
+.visual-topline, .visual-bottom { color: #555e58; font-size: 14px; }
 .visual-photo { height: 540px; border-radius: 9px; background: #dce8df; }
 .visual-photo::after { border-radius: inherit; background: linear-gradient(180deg, transparent 46%, rgba(24, 38, 31, 0.29)); mix-blend-mode: normal; }
 .visual-photo img { border-radius: inherit; object-position: 48% center; filter: saturate(0.8); }

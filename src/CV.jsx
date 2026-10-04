@@ -9,7 +9,7 @@ const experience = [
     date: '10/2022 – Present',
     points: [
       'Lead frontend engineers and establish UI standards, code quality benchmarks, and mobile-first practices.',
-      'Build e-commerce experiences with Shopify, Wix, and Magento, integrating third-party APIs and secure payment gateways.',
+      'Build e-commerce experiences with Shopify, Wix, integrating third-party APIs and secure payment gateways.',
       'Improved site speed and mobile responsiveness by 30% through cross-browser performance work.',
       'Partner with design and product marketing teams to deliver client brand launches.',
     ],
@@ -43,7 +43,7 @@ const experience = [
 
 const skillGroups = [
   { category: 'Frontend', items: 'HTML5, CSS3, JavaScript (ES6+), jQuery, Bootstrap, React.js' },
-  { category: 'CMS & commerce', items: 'Shopify custom theme design (3 years), Shopify customization, WordPress, Wix, Magento' },
+  { category: 'CMS & commerce', items: 'Shopify custom theme design (3 years), Shopify customization, WordPress, Wix' },
   { category: 'Design & UX', items: 'Responsive web design, interface design, UX optimization, graphic design' },
   { category: 'Optimization', items: 'Cross-browser debugging, payment integration, performance optimization' },
 ]
@@ -63,7 +63,7 @@ export default function CV() {
           <div className="cv-card-copy">
             <span className="cv-years">10+ YEARS IN FRONTEND</span>
             <h2>LEAD FRONTEND<br /><span>DEVELOPER.</span></h2>
-            <p>Frontend engineering, team leadership, responsive UI, and e-commerce across React, Shopify, WordPress, Wix, and Magento.</p>
+            <p>Frontend engineering, team leadership, responsive UI, and e-commerce across React, Shopify, WordPress, Wix.</p>
           </div>
           <div className="cv-card-action">
             <span className="cv-current-role">CURRENTLY AT GRAPHĒ<br />KOLKATA, INDIA</span>
@@ -93,7 +93,7 @@ export default function CV() {
 
           <section className="cv-block">
             <h3>SUMMARY</h3>
-            <p>Results-driven Lead Frontend Developer and Web Specialist with 10+ years of experience building responsive, accessible web applications. Experienced in leading frontend teams and delivering e-commerce and corporate websites with Shopify, WordPress, Wix, Magento, React, and JavaScript. Focused on UX, payment integrations, and cross-browser performance.</p>
+            <p>Results-driven Lead Frontend Developer and Web Specialist with 10+ years of experience building responsive, accessible web applications. Experienced in leading frontend teams and delivering e-commerce and corporate websites with Shopify, WordPress, Wix, React, and JavaScript. Focused on UX, payment integrations, and cross-browser performance.</p>
           </section>
 
           <section className="cv-block">
