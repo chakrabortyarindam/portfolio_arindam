@@ -190,7 +190,7 @@ function Hero() {
       <div className="hero-visual" aria-label="Website and storefront concept">
         <div className="visual-topline"><span>BUILD / SHIP / ITERATE</span><span>EST. 2014 — NOW</span></div>
         <div className="visual-photo">
-          <img src="./images/hero-banner.jpg" alt="Illustrative engineering team collaborating over a project" fetchPriority="high" />
+          <img src="./images/hero-banner.png" alt="Illustrative engineering team collaborating over a project" fetchPriority="high" />
           <span className="visual-stamp">BUILT<br />WITH<br /><i>INTENT.</i></span>
           <span className="visual-code"><span>const</span> experience = <b>"thoughtful"</b>;</span>
         </div>
