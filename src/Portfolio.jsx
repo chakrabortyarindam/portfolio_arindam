@@ -1,0 +1,373 @@
+import { useEffect, useRef, useState } from 'react'
+import { Atom, Braces, Code2, FileCode2, Globe2, Layers3, PanelsTopLeft, ChevronDown, ShoppingBag, X, Sun, Moon } from 'lucide-react'
+import CV from './CV.jsx'
+import { featuredProjects as projects } from './projects.js'
+
+const skills = [
+  { name: 'React', Icon: Atom, description: 'Build reusable UI from focused components. Add interactive states while keeping larger pages structured and easy to extend.' },
+  { name: 'JavaScript', Icon: Braces, description: 'Bring interfaces to life with modern JavaScript. Handle events, state, and the small interactions that make a site feel responsive.' },
+  { name: 'HTML5', Icon: FileCode2, description: 'Create semantic page structure that is easier to navigate. Use accessible markup to give browsers and assistive technology clear meaning.' },
+  { name: 'CSS3', Icon: Code2, description: 'Shape layouts that adapt from mobile to desktop. Use modern CSS for clear visual hierarchy, transitions, and polished details.' },
+  { name: 'Tailwind CSS', Icon: Layers3, description: 'Build consistent interfaces with utility-first styling. Reuse design tokens and iterate on responsive layouts quickly.' },
+  { name: 'WordPress', Icon: Globe2, description: 'Create and customize content-driven websites. Structure pages so common updates stay manageable for the people who run the site.' },
+  { name: 'Wix', Icon: PanelsTopLeft, description: 'Build and refine responsive Wix websites. Organize pages and content into a clean experience that is straightforward to maintain.' },
+  { name: 'E-commerce', Icon: ShoppingBag, description: 'Design storefront experiences around products and clear next steps. Keep browsing, product details, and checkout easy to follow.' },
+  { name: 'Shopify Custom Theme Design', Icon: PanelsTopLeft, description: 'Three years of experience customizing Shopify themes, shaping storefront sections, styling, and responsive shopping details for each brand.' },
+]
+
+const freelancePackages = [
+  {
+    number: '01',
+    name: 'Landing page',
+    Icon: Code2,
+    price: '₹18,000+',
+    description: 'A focused, polished page for a product, service, or campaign.',
+    features: ['Single-page responsive build', 'Contact form integration', 'On-page SEO fundamentals'],
+  },
+  {
+    number: '02',
+    name: 'Business website',
+    Icon: Globe2,
+    price: '₹45,000+',
+    description: 'A flexible multi-page site that gives your business room to grow.',
+    features: ['Up to five core pages', 'WordPress or Wix setup', 'Responsive UI and SEO basics'],
+  },
+  {
+    number: '03',
+    name: 'E-commerce store',
+    Icon: ShoppingBag,
+    price: '₹75,000+',
+    description: 'A product-first storefront with a considered path to checkout.',
+    features: ['Shopify, Wix, or Magento setup', 'Catalogue and checkout integration', 'Mobile-first storefront UI'],
+  },
+]
+
+function useReveal() {
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const element = ref.current
+    if (!element) return
+    if (!('IntersectionObserver' in window)) {
+      element.classList.add('is-visible')
+      return
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible')
+        observer.unobserve(entry.target)
+      }
+    }, { threshold: 0.12, rootMargin: '0px 0px -36px 0px' })
+
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
+
+  return ref
+}
+
+function ArrowIcon() {
+  return <span aria-hidden="true" className="arrow-icon">↗</span>
+}
+
+function Header({ theme, onThemeToggle }) {
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  return (
+    <header className="site-header">
+      <a className="wordmark" href="#top" aria-label="Arindam Chakraborty, home">arindam<span>.dev</span></a>
+      <p className="header-role">LEAD FRONTEND <span>/</span> KOLKATA, IN</p>
+      <a className="header-availability" href="#contact"><span /> OPEN TO SELECT PROJECTS</a>
+      <button
+        className="theme-toggle"
+        type="button"
+        aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+        aria-pressed={theme === 'dark'}
+        title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+        onClick={onThemeToggle}
+      >
+        <Sun size={16} aria-hidden="true" />
+        <span className="theme-switch-track"><span className="theme-switch-thumb" /></span>
+        <Moon size={15} aria-hidden="true" />
+      </button>
+      <button
+        className="menu-toggle"
+        type="button"
+        aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
+        aria-expanded={menuOpen}
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
+        <span /><span />
+      </button>
+      {menuOpen && (
+        <nav className="mobile-nav" aria-label="Mobile navigation">
+          <a href="#top" onClick={() => setMenuOpen(false)}>Home</a>
+          <a href="#work" onClick={() => setMenuOpen(false)}>Projects</a>
+          <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
+          <a href="#freelance" onClick={() => setMenuOpen(false)}>Freelance</a>
+          <a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
+        </nav>
+      )}
+    </header>
+  )
+}
+
+function Hero() {
+  return (
+    <section className="hero page-shell" id="top">
+      <div className="hero-copy">
+        <p className="eyebrow"><span className="eyebrow-line" /> LEAD FRONTEND DEVELOPER <span className="hero-location">/ KOLKATA, INDIA</span></p>
+        <h1>CODE THAT<br />FEELS <span>HUMAN.</span></h1>
+        <div className="hero-bottom">
+          <p>10+ years turning ambitious ideas into responsive, accessible web experiences. Thoughtful React builds, useful details, and a little more humanity in every interface.</p>
+          <a className="hero-link" href="#work">EXPLORE SELECTED WORK <ArrowIcon /></a>
+        </div>
+      </div>
+      <div className="hero-visual" aria-label="Website and storefront concept">
+        <div className="visual-topline"><span>BUILD / SHIP / ITERATE</span><span>EST. 2014 — NOW</span></div>
+        <div className="visual-photo">
+          <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1100&q=75" alt="Illustrative engineering team collaborating over a project" fetchPriority="high" />
+          <span className="visual-stamp">BUILT<br />WITH<br /><i>INTENT.</i></span>
+          <span className="visual-code"><span>const</span> experience = <b>"thoughtful"</b>;</span>
+        </div>
+        <div className="visual-bottom"><span>REACT / JAVASCRIPT / ACCESSIBILITY</span><span>10+ YEARS <b>↗</b></span></div>
+        <span className="visual-index">INDEPENDENT BY NATURE</span>
+      </div>
+      <a className="scroll-cue" href="#about"><span /> SCROLL TO EXPLORE</a>
+    </section>
+  )
+}
+
+function About() {
+  const revealRef = useReveal()
+
+  return (
+    <section className="about-section section-shell reveal" id="about" ref={revealRef}>
+      <div className="section-marker"><span>01</span><span>ABOUT</span></div>
+      <div className="about-content">
+        <div className="section-title-row"><h2>FROM BRIEF<br />TO <span>BROWSER.</span></h2><span className="title-aside">THOUGHTFUL FRONTEND.<br />BUILT FOR THE REAL WORLD.</span></div>
+        <p className="about-copy">I'm Arindam Chakraborty, a lead frontend developer with more than a decade of experience bringing digital products to life. I build responsive interfaces, shape reusable systems, and lead teams toward work that feels considered from the first tap to the final detail.</p>
+        <div className="capability-strip"><span>10+ YEARS BUILDING FOR THE WEB</span><span>TEAM & TECHNICAL LEADERSHIP</span><span>PERFORMANCE, UX, DETAIL</span></div>
+      </div>
+    </section>
+  )
+}
+
+function ProjectCard({ project, index, onOpen }) {
+  const revealRef = useReveal()
+
+  const tiltCard = (event) => {
+    if (event.pointerType !== 'mouse') return
+    const bounds = event.currentTarget.getBoundingClientRect()
+    const x = (event.clientX - bounds.left) / bounds.width - 0.5
+    const y = (event.clientY - bounds.top) / bounds.height - 0.5
+    event.currentTarget.style.setProperty('--pointer-tilt-x', `${(-y * 5).toFixed(2)}deg`)
+    event.currentTarget.style.setProperty('--pointer-tilt-y', `${(x * 7).toFixed(2)}deg`)
+  }
+
+  const resetCardTilt = (event) => {
+    event.currentTarget.style.removeProperty('--pointer-tilt-x')
+    event.currentTarget.style.removeProperty('--pointer-tilt-y')
+  }
+
+  return (
+    <article className="project-card reveal" ref={revealRef} style={{ '--reveal-delay': `${(index % 2) * 140}ms` }}>
+      <button className="project-card-button" type="button" onClick={() => onOpen(project)} onPointerMove={tiltCard} onPointerLeave={resetCardTilt} aria-label={`View ${project.title} project details`}>
+      <span className="project-image">
+        <img src={project.image} alt={project.alt} loading="lazy" decoding="async" />
+        <span className="project-number">{project.number} / {String(projects.length).padStart(2, '0')}</span>
+        <span className="project-arrow" aria-hidden="true"><ArrowIcon /></span>
+      </span>
+      <span className="project-info"><span className="project-summary"><span className="project-type">{project.type}</span><span className="project-title" role="heading" aria-level="3">{project.title}</span><span className="project-description">{project.description}</span></span><span className="project-index">{project.number}</span></span>
+      </button>
+    </article>
+  )
+}
+
+function Projects() {
+  const revealRef = useReveal()
+  const dialogRef = useRef(null)
+  const [selectedProject, setSelectedProject] = useState(null)
+
+  useEffect(() => {
+    if (selectedProject && !dialogRef.current?.open) dialogRef.current?.showModal()
+  }, [selectedProject])
+
+  const closeFromBackdrop = (event) => {
+    if (event.target === dialogRef.current) dialogRef.current.close()
+  }
+
+  return (
+    <section className="work-section section-shell reveal" id="work" ref={revealRef}>
+      <div className="section-marker"><span>02</span><span>SELECTED PROJECTS</span></div>
+      <div className="work-heading"><h2>THE WORK<br /><span>SPEAKS.</span></h2><p>Six launches across engineering, fashion, commerce, culture, and community. Open a project for its brief and platform details. Photography is illustrative.</p></div>
+      <div className="project-grid" aria-label="Portfolio projects">
+        {projects.map((project, index) => (
+          <ProjectCard project={project} index={index} key={project.number} onOpen={setSelectedProject} />
+        ))}
+      </div>
+      <dialog className="project-dialog" ref={dialogRef} aria-labelledby="project-dialog-title" onClick={closeFromBackdrop} onClose={() => setSelectedProject(null)}>
+        {selectedProject && (
+          <div className="project-dialog-content">
+            <div className="project-dialog-header"><span>{selectedProject.type} / {selectedProject.number} OF {String(projects.length).padStart(2, '0')}</span><button type="button" aria-label="Close project details" onClick={() => dialogRef.current?.close()}><X size={20} /></button></div>
+            <div className="project-dialog-layout">
+              <div className="project-dialog-image"><img src={selectedProject.image} alt={selectedProject.alt} /></div>
+              <div className="project-dialog-copy"><span className="project-dialog-kicker">PROJECT / {selectedProject.number}</span><h3 id="project-dialog-title">{selectedProject.title}</h3><p>{selectedProject.description}</p><h4>PLATFORM & FOCUS</h4><div className="project-platforms">{selectedProject.platforms.map((platform) => <span key={platform}><Code2 size={16} aria-hidden="true" />{platform}</span>)}</div></div>
+            </div>
+          </div>
+        )}
+      </dialog>
+    </section>
+  )
+}
+
+function Toolkit() {
+  const revealRef = useReveal()
+  const [expandedSkill, setExpandedSkill] = useState(null)
+
+  return (
+    <section className="toolkit-section" aria-labelledby="toolkit-title">
+      <div className="toolkit-inner section-shell reveal" ref={revealRef}>
+        <div className="section-marker"><span>03</span><span>FRONTEND TOOLKIT</span></div>
+        <div className="toolkit-layout">
+          <div><h2 id="toolkit-title">TOOLS FOR<br /><span>THE CRAFT.</span></h2><p>A decade of hands-on work across frontend engineering, content platforms, performance, and e-commerce.</p></div>
+          <ul className="skill-list">
+            {skills.map(({ name, Icon, description }, index) => {
+              const isExpanded = expandedSkill === index
+              const triggerId = `skill-trigger-${index}`
+              const detailId = `skill-detail-${index}`
+
+              return (
+                <li className={isExpanded ? 'skill-item is-expanded' : 'skill-item'} key={name}>
+                  <button
+                    className="skill-trigger"
+                    id={triggerId}
+                    type="button"
+                    aria-expanded={isExpanded}
+                    aria-controls={detailId}
+                    onClick={() => setExpandedSkill(isExpanded ? null : index)}
+                  >
+                    <span className="skill-number">0{index + 1}</span>
+                    <span className="skill-icon" aria-hidden="true"><Icon size={17} strokeWidth={1.7} /></span>
+                    <span className="skill-name">{name}</span>
+                    <ChevronDown className="skill-chevron" size={16} aria-hidden="true" />
+                  </button>
+                  <div className="skill-details" id={detailId} aria-labelledby={triggerId} aria-hidden={!isExpanded}>
+                    <div className="skill-details-inner"><p>{description}</p></div>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function FreelancePricing() {
+  const revealRef = useReveal()
+
+  return (
+    <section className="freelance-section" id="freelance" aria-labelledby="freelance-title">
+      <div className="freelance-inner section-shell reveal" ref={revealRef}>
+        <div className="section-marker"><span>04</span><span>FREELANCE SERVICES</span></div>
+        <div className="freelance-heading">
+          <div><p className="freelance-eyebrow">CLEAR STARTING POINTS</p><h2 id="freelance-title">GOOD WORK.<br /><span>FAIR SCOPE.</span></h2></div>
+          <p>Choose a starting package, then we’ll tailor the details to your goals, content, and integrations.</p>
+        </div>
+        <div className="freelance-grid">
+          {freelancePackages.map(({ number, name, Icon, price, description, features }) => (
+            <article className="rate-card" key={name}>
+              <div className="rate-card-top"><span>{number} / 03</span><Icon size={21} strokeWidth={1.7} aria-hidden="true" /></div>
+              <h3>{name}</h3>
+              <p className="rate-description">{description}</p>
+              <div className="rate-price"><span>STARTING AT</span><strong>{price}</strong></div>
+              <ul>{features.map((feature) => <li key={feature}><span aria-hidden="true">+</span>{feature}</li>)}</ul>
+              <a className="rate-cta" href={`mailto:arindam23@live.com?subject=${encodeURIComponent(`${name} project inquiry`)}`}>DISCUSS THIS PACKAGE <ArrowIcon /></a>
+            </article>
+          ))}
+        </div>
+        <p className="freelance-note">Indicative starting prices in INR. Final quote depends on scope, content, integrations, and third-party costs.</p>
+      </div>
+    </section>
+  )
+}
+
+function Contact() {
+  const revealRef = useReveal()
+
+  return (
+    <section className="contact-section" id="contact">
+      <div className="contact-inner section-shell reveal" ref={revealRef}>
+        <div className="section-marker"><span>06</span><span>THE NEXT STEP</span></div>
+        <p className="contact-prelude">HAVE AN IDEA?</p>
+        <h2>LET'S MAKE<br /><span>IT HAPPEN.</span></h2>
+        <div className="contact-bottom"><p>Have a demanding brief and an appetite for details? Let's turn it into an experience worth spending time with.</p><a className="contact-button" href="mailto:arindam23@live.com?subject=Frontend%20project%20inquiry">START A CONVERSATION <ArrowIcon /></a></div>
+        <span className="contact-orbit" aria-hidden="true">A<span>.</span></span>
+      </div>
+    </section>
+  )
+}
+
+function Footer() {
+  return (
+    <footer className="site-footer section-shell">
+      <a className="wordmark" href="#top">A<span>.</span></a>
+      <p>BUILT WITH REACT. STYLED WITH CARE.</p>
+      <a href="#top" className="back-top">BACK TO TOP ↑</a>
+    </footer>
+  )
+}
+
+function BottomNav() {
+  return (
+    <nav className="bottom-nav" aria-label="Main navigation">
+      <a className="nav-home" href="#top" aria-label="Home">A<span>.</span></a>
+      <a href="#about">ABOUT</a>
+      <a href="#work">WORK</a>
+      <a href="#cv">CV</a>
+      <a href="#contact">CONTACT <ArrowIcon /></a>
+    </nav>
+  )
+}
+
+export default function Portfolio() {
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem('arindam-portfolio-theme') === 'light' ? 'light' : 'dark'
+    } catch {
+      return 'dark'
+    }
+  })
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    document.documentElement.style.colorScheme = theme
+
+    try {
+      localStorage.setItem('arindam-portfolio-theme', theme)
+    } catch {}
+
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#071923' : '#f8f8f4')
+  }, [theme])
+
+  return (
+    <div className="portfolio-app" data-theme={theme}>
+      <div className="scroll-progress" aria-hidden="true" />
+      <Header theme={theme} onThemeToggle={() => setTheme(current => current === 'dark' ? 'light' : 'dark')} />
+      <main>
+        <Hero />
+        <About />
+        <Projects />
+        <Toolkit />
+        <FreelancePricing />
+        <CV />
+        <Contact />
+      </main>
+      <Footer />
+      <BottomNav />
+    </div>
+  )
+}
