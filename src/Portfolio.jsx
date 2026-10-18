@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import * as THREE from 'three'
 import { Code2, Globe2, ChevronDown, ShoppingBag, X, Sun, Moon, Star, UserRound, ChevronLeft, ChevronRight } from 'lucide-react'
 import { siReact, siJavascript, siHtml5, siCss, siTailwindcss, siWordpress, siWix, siShopify, siWhatsapp } from 'simple-icons'
 import CV from './CV.jsx'
@@ -134,6 +135,108 @@ function BrandIcon({ icon, color, size = 20 }) {
   )
 }
 
+function ThreeHeroScene() {
+  const mountRef = useRef(null)
+
+  useEffect(() => {
+    const mount = mountRef.current
+    if (!mount) return undefined
+
+    const scene = new THREE.Scene()
+    const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100)
+    camera.position.set(0, 0.15, 7.4)
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' })
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.setClearColor(0x000000, 0)
+    mount.appendChild(renderer.domElement)
+
+    const accent = new THREE.Color('#baff45')
+    const softAccent = new THREE.Color('#65c7b2')
+    const group = new THREE.Group()
+    scene.add(group)
+
+    const core = new THREE.Mesh(new THREE.IcosahedronGeometry(1.45, 2), new THREE.MeshBasicMaterial({ color: accent, wireframe: true, transparent: true, opacity: 0.62 }))
+    const innerCore = new THREE.Mesh(new THREE.IcosahedronGeometry(0.92, 1), new THREE.MeshBasicMaterial({ color: softAccent, wireframe: true, transparent: true, opacity: 0.34 }))
+    group.add(core, innerCore)
+
+    const ringMaterial = new THREE.MeshBasicMaterial({ color: accent, wireframe: true, transparent: true, opacity: 0.35 })
+    const rings = [
+      { rotation: [0.3, 0.2, 0.2], scale: 1.75 },
+      { rotation: [1.1, 0.3, -0.4], scale: 2.05 },
+      { rotation: [-0.6, 0.8, 0.2], scale: 2.35 },
+    ].map(({ rotation, scale }) => {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(1.05, 0.012, 8, 96), ringMaterial)
+      ring.rotation.set(...rotation)
+      ring.scale.setScalar(scale)
+      group.add(ring)
+      return ring
+    })
+
+    const particleCount = 620
+    const positions = new Float32Array(particleCount * 3)
+    for (let index = 0; index < particleCount; index += 1) {
+      const radius = 2.2 + Math.random() * 2.4
+      const theta = Math.random() * Math.PI * 2
+      const phi = Math.acos((Math.random() * 2) - 1)
+      positions[index * 3] = radius * Math.sin(phi) * Math.cos(theta)
+      positions[(index * 3) + 1] = radius * Math.cos(phi)
+      positions[(index * 3) + 2] = radius * Math.sin(phi) * Math.sin(theta)
+    }
+    const particleGeometry = new THREE.BufferGeometry()
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+    const particles = new THREE.Points(particleGeometry, new THREE.PointsMaterial({ color: softAccent, size: 0.025, transparent: true, opacity: 0.7, sizeAttenuation: true }))
+    scene.add(particles)
+
+    const targetRotation = new THREE.Vector2()
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let frameId
+
+    const resize = () => {
+      const { width, height } = mount.getBoundingClientRect()
+      if (!width || !height) return
+      camera.aspect = width / height
+      camera.updateProjectionMatrix()
+      renderer.setSize(width, height, false)
+    }
+    const onPointerMove = (event) => {
+      const bounds = mount.getBoundingClientRect()
+      targetRotation.set(-(((event.clientY - bounds.top) / bounds.height) * 2 - 1) * 0.22, (((event.clientX - bounds.left) / bounds.width) * 2 - 1) * 0.3)
+    }
+    const animate = () => {
+      frameId = window.requestAnimationFrame(animate)
+      const motionScale = reducedMotion.matches ? 0 : 1
+      group.rotation.x += (targetRotation.x - group.rotation.x) * 0.035
+      group.rotation.y += (targetRotation.y - group.rotation.y) * 0.035
+      group.rotation.z += 0.0015 * motionScale
+      core.rotation.y += 0.003 * motionScale
+      innerCore.rotation.y -= 0.004 * motionScale
+      rings.forEach((ring, index) => { ring.rotation.z += (0.001 + (index * 0.0007)) * motionScale })
+      particles.rotation.y -= 0.00035 * motionScale
+      renderer.render(scene, camera)
+    }
+
+    const observer = new ResizeObserver(resize)
+    observer.observe(mount)
+    mount.addEventListener('pointermove', onPointerMove)
+    resize()
+    animate()
+
+    return () => {
+      window.cancelAnimationFrame(frameId)
+      observer.disconnect()
+      mount.removeEventListener('pointermove', onPointerMove)
+      scene.traverse((object) => {
+        if (object.geometry) object.geometry.dispose()
+        if (object.material) (Array.isArray(object.material) ? object.material : [object.material]).forEach((material) => material.dispose())
+      })
+      renderer.dispose()
+      renderer.domElement.remove()
+    }
+  }, [])
+
+  return <div className="three-hero-scene" ref={mountRef} aria-hidden="true" />
+}
+
 function Header({ theme, onThemeToggle }) {
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -187,12 +290,18 @@ function Hero() {
           <a className="hero-link" href="#work">EXPLORE SELECTED WORK <ArrowIcon /></a>
         </div>
       </div>
-      <div className="hero-visual" aria-label="Website and storefront concept">
+      <div className="hero-visual" aria-label="Interactive three dimensional frontend developer visual">
         <div className="visual-topline"><span>BUILD / SHIP / ITERATE</span><span>EST. 2014 — NOW</span></div>
         <div className="visual-photo">
-          <img src="./images/hero-banner.png" alt="Illustrative engineering team collaborating over a project" fetchPriority="high" />
+          <ThreeHeroScene />
+          <span className="visual-grid" aria-hidden="true" />
+          <span className="visual-scanline" aria-hidden="true" />
+          <span className="visual-top-chip"><i /> CREATIVE SYSTEM / 01</span>
           <span className="visual-stamp">BUILT<br />WITH<br /><i>INTENT.</i></span>
           <span className="visual-code"><span>const</span> experience = <b>"thoughtful"</b>;</span>
+          <span className="visual-profile-card"><small>ARINDAM / FRONTEND SYSTEMS</small><strong>10<span>+</span></strong><b>YEARS OF MAKING<br />DIGITAL FEEL HUMAN</b></span>
+          <span className="visual-side-label">INTERFACE<br />MOTION<br />DETAIL</span>
+          <span className="visual-orbit-badge">MOVE<br /><b>TO EXPLORE</b></span>
         </div>
         <div className="visual-bottom"><span>REACT / JAVASCRIPT / ACCESSIBILITY</span><span>10+ YEARS <b>↗</b></span></div>
         <span className="visual-index">INDEPENDENT BY NATURE</span>
