@@ -76,7 +76,7 @@ const freelancePackages = [
     number: '01',
     name: 'Landing page',
     Icon: Code2,
-    price: '₹9,000+',
+    price: 15000,
     description: 'A focused, polished page for a product, service, or campaign.',
     features: ['Single-page responsive build', 'Contact form integration', 'On-page SEO fundamentals'],
   },
@@ -84,7 +84,7 @@ const freelancePackages = [
     number: '02',
     name: 'Business website',
     Icon: Globe2,
-    price: '₹20,000+',
+    price: 35000,
     description: 'A flexible multi-page site that gives your business room to grow.',
     features: ['Up to five core pages', 'WordPress or Wix setup', 'Responsive UI and SEO basics'],
   },
@@ -92,11 +92,36 @@ const freelancePackages = [
     number: '03',
     name: 'E-commerce store',
     Icon: ShoppingBag,
-    price: '₹30,000+',
+    price: 60000,
     description: 'A product-first storefront with a considered path to checkout.',
     features: ['Shopify or WordPress setup', 'Catalogue and checkout integration', 'Mobile-first storefront UI'],
   },
 ]
+
+const currencyOptions = [
+  { code: 'INR', country: 'India', flag: '🇮🇳', locale: 'en-IN', rate: 1 },
+  { code: 'USD', country: 'United States', flag: '🇺🇸', locale: 'en-US', rate: 0.01052676099 },
+  { code: 'EUR', country: 'European Union', flag: '🇪🇺', locale: 'en-IE', rate: 0.00936644627 },
+  { code: 'GBP', country: 'United Kingdom', flag: '🇬🇧', locale: 'en-GB', rate: 0.00789773145 },
+  { code: 'AUD', country: 'Australia', flag: '🇦🇺', locale: 'en-AU', rate: 0.01515096233 },
+  { code: 'CAD', country: 'Canada', flag: '🇨🇦', locale: 'en-CA', rate: 0.0148873953 },
+  { code: 'SGD', country: 'Singapore', flag: '🇸🇬', locale: 'en-SG', rate: 0.0134728837 },
+  { code: 'AED', country: 'United Arab Emirates', flag: '🇦🇪', locale: 'en-AE', rate: 0.03865952974 },
+]
+
+const timelineOptions = [
+  { code: 'priority', label: 'Priority', detail: '1-2 weeks', multiplier: 1.25 },
+  { code: 'standard', label: 'Standard', detail: '2-4 weeks', multiplier: 1 },
+  { code: 'extended', label: 'Extended', detail: '4-6 weeks', multiplier: 0.9 },
+]
+
+function formatCurrency(amount, currency, multiplier = 1) {
+  return new Intl.NumberFormat(currency.locale, {
+    style: 'currency',
+    currency: currency.code,
+    maximumFractionDigits: 0,
+  }).format(amount * multiplier * currency.rate)
+}
 
 function useReveal() {
   const ref = useRef(null)
@@ -243,8 +268,6 @@ function Header({ theme, onThemeToggle }) {
   return (
     <header className="site-header">
       <a className="wordmark" href="#top" aria-label="Arindam Chakraborty, home">arindam<span>.dev</span></a>
-      <p className="header-role">LEAD FRONTEND <span>/</span> KOLKATA, IN</p>
-      <a className="header-availability" href="#contact"><span /> OPEN TO SELECT PROJECTS</a>
       <button
         className="theme-toggle"
         type="button"
@@ -271,7 +294,6 @@ function Header({ theme, onThemeToggle }) {
           <a href="#top" onClick={() => setMenuOpen(false)}>Home</a>
           <a href="#work" onClick={() => setMenuOpen(false)}>Projects</a>
           <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
-          <a href="#freelance" onClick={() => setMenuOpen(false)}>Freelance</a>
           <a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
         </nav>
       )}
@@ -503,6 +525,10 @@ function Toolkit() {
 
 function FreelancePricing() {
   const revealRef = useReveal()
+  const [selectedCurrencyCode, setSelectedCurrencyCode] = useState('INR')
+  const [selectedTimelineCode, setSelectedTimelineCode] = useState('standard')
+  const selectedCurrency = currencyOptions.find(({ code }) => code === selectedCurrencyCode) ?? currencyOptions[0]
+  const selectedTimeline = timelineOptions.find(({ code }) => code === selectedTimelineCode) ?? timelineOptions[1]
 
   return (
     <section className="freelance-section" id="freelance" aria-labelledby="freelance-title">
@@ -512,19 +538,41 @@ function FreelancePricing() {
           <div><p className="freelance-eyebrow">CLEAR STARTING POINTS</p><h2 id="freelance-title">GOOD WORK.<br /><span>FAIR SCOPE.</span></h2></div>
           <p>Choose a starting package, then we’ll tailor the details to your goals, content, and integrations.</p>
         </div>
+        <div className="currency-picker-row">
+          <div>
+            <span className="currency-picker-label">VIEW PRICES IN</span>
+            <span className="currency-picker-caption">Choose your preferred country and currency</span>
+          </div>
+          <div className="currency-picker-controls">
+            <label className="currency-picker">
+              <span className="currency-flag" aria-hidden="true">{selectedCurrency.flag}</span>
+              <select value={selectedCurrencyCode} onChange={(event) => setSelectedCurrencyCode(event.target.value)} aria-label="Choose pricing currency">
+                {currencyOptions.map(({ code, country, flag }) => <option value={code} key={code}>{flag} {code} - {country}</option>)}
+              </select>
+              <ChevronDown size={16} aria-hidden="true" />
+            </label>
+            <label className="currency-picker timeline-picker">
+              <span className="timeline-icon" aria-hidden="true">◷</span>
+              <select value={selectedTimelineCode} onChange={(event) => setSelectedTimelineCode(event.target.value)} aria-label="Choose project timeline">
+                {timelineOptions.map(({ code, label, detail }) => <option value={code} key={code}>{label} - {detail}</option>)}
+              </select>
+              <ChevronDown size={16} aria-hidden="true" />
+            </label>
+          </div>
+        </div>
         <div className="freelance-grid">
           {freelancePackages.map(({ number, name, Icon, price, description, features }) => (
             <article className="rate-card" key={name}>
               <div className="rate-card-top"><span>{number} / 03</span><Icon size={21} strokeWidth={1.7} aria-hidden="true" /></div>
               <h3>{name}</h3>
               <p className="rate-description">{description}</p>
-              <div className="rate-price"><span>STARTING AT</span><strong>{price}</strong></div>
+              <div className="rate-price"><span>STARTING AT · {selectedCurrency.code}</span><strong>{formatCurrency(price, selectedCurrency, selectedTimeline.multiplier)}</strong></div>
               <ul>{features.map((feature) => <li key={feature}><span aria-hidden="true">+</span>{feature}</li>)}</ul>
-              <a className="rate-cta" href={`mailto:arindam23@live.com?subject=${encodeURIComponent(`${name} project inquiry`)}`}>DISCUSS THIS PACKAGE <ArrowIcon /></a>
+              <a className="rate-cta" href={`mailto:arindam23@live.com?subject=${encodeURIComponent(`${name} project inquiry - ${selectedCurrency.code} - ${selectedTimeline.label}`)}`}>DISCUSS THIS PACKAGE <ArrowIcon /></a>
             </article>
           ))}
         </div>
-        <p className="freelance-note">Indicative starting prices in INR. Final quote depends on scope, content, integrations, and third-party costs.</p>
+        <p className="freelance-note">Standard Indian expert pricing is shown by default. Priority delivery adds 25%; extended timelines reduce the starting price by 10%. Currency conversions are indicative.</p>
       </div>
     </section>
   )
