@@ -1,3 +1,5 @@
+import yaminiMalaniImage from './assets/yamini-malani.jpg'
+
 export const featuredProjects = [
   {
     number: '01',
@@ -35,7 +37,7 @@ export const featuredProjects = [
     title: 'Yamini Malani',
     description: 'Customized the Shopify store layout to improve checkout flow and conversions.',
     platforms: ['Shopify', 'E-commerce'],
-    image: './images/yamini-malani.jpg',
+    image: yaminiMalaniImage,
     alt: 'Website preview of Yamini Malani',
   },
 
