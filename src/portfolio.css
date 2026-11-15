@@ -1948,6 +1948,9 @@ body {
   --surface: #eee8db;
   --surface-raised: #f9f5eb;
   --surface-accent: #e4dece;
+  --scrollbar-track: #eee8db;
+  --scrollbar-thumb: #9aa58d;
+  --scrollbar-thumb-hover: #566b48;
   --modern-glass: rgba(247, 243, 232, 0.9);
   --modern-glow: rgba(86, 107, 72, 0.09);
   --particle-one: rgba(86, 107, 72, 0.08);
@@ -1969,6 +1972,9 @@ body {
   --surface: #252b23;
   --surface-raised: #2d342a;
   --surface-accent: #343b2f;
+  --scrollbar-track: #252b23;
+  --scrollbar-thumb: #68735f;
+  --scrollbar-thumb-hover: #b7c28e;
   --modern-glass: rgba(29, 34, 28, 0.9);
   --modern-glow: rgba(183, 194, 142, 0.1);
   --particle-one: rgba(183, 194, 142, 0.08);
@@ -2198,3 +2204,18 @@ body::before { opacity: 0.28; }
 :root[data-theme] .project-slider-track .project-card-button:hover { box-shadow: var(--card-shadow-hover); }
 :root[data-theme] .rate-card:hover { box-shadow: var(--card-shadow-hover); }
 :root[data-theme] .cv-card { box-shadow: var(--card-shadow-offset); }
+
+:root {
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb {
+  border: 2px solid var(--scrollbar-track);
+  border-radius: 999px;
+  background-color: var(--scrollbar-thumb);
+}
+::-webkit-scrollbar-thumb:hover { background-color: var(--scrollbar-thumb-hover); }
+::-webkit-scrollbar-corner { background-color: var(--scrollbar-track); }
