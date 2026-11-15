@@ -1,20 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Code2, Globe2, ChevronDown, ShoppingBag, X, Sun, Moon, Star, UserRound, ChevronLeft, ChevronRight } from 'lucide-react'
 import { siReact, siJavascript, siHtml5, siCss, siTailwindcss, siWordpress, siWix, siShopify, siWhatsapp } from 'simple-icons'
 import CV from './CV.jsx'
 import { featuredProjects as projects } from './projects.js'
 
+gsap.registerPlugin(ScrollTrigger)
+
 const skills = [
-  { name: 'React', brandIcon: siReact, brandColor: '#61DAFB', description: 'Build reusable UI from focused components. Add interactive states while keeping larger pages structured and easy to extend.' },
-  { name: 'JavaScript', brandIcon: siJavascript, brandColor: '#F7DF1E', description: 'Bring interfaces to life with modern JavaScript. Handle events, state, and the small interactions that make a site feel responsive.' },
-  { name: 'HTML5', brandIcon: siHtml5, brandColor: '#E34F26', description: 'Create semantic page structure that is easier to navigate. Use accessible markup to give browsers and assistive technology clear meaning.' },
-  { name: 'CSS3', brandIcon: siCss, brandColor: '#1572B6', description: 'Shape layouts that adapt from mobile to desktop. Use modern CSS for clear visual hierarchy, transitions, and polished details.' },
-  { name: 'Tailwind CSS', brandIcon: siTailwindcss, brandColor: '#06B6D4', description: 'Build consistent interfaces with utility-first styling. Reuse design tokens and iterate on responsive layouts quickly.' },
-  { name: 'WordPress', brandIcon: siWordpress, brandColor: '#21759B', description: 'Create and customize content-driven websites. Structure pages so common updates stay manageable for the people who run the site.' },
-  { name: 'Wix', brandIcon: siWix, brandColor: '#0C6EFC', description: 'Build and refine responsive Wix websites. Organize pages and content into a clean experience that is straightforward to maintain.' },
-  { name: 'E-commerce', Icon: ShoppingBag, description: 'Design storefront experiences around products and clear next steps. Keep browsing, product details, and checkout easy to follow.' },
-  { name: 'Shopify Custom Theme Design', brandIcon: siShopify, brandColor: '#95BF47', description: 'Three years of experience customizing Shopify themes, shaping storefront sections, styling, and responsive shopping details for each brand.' },
+  { name: 'React', brandIcon: siReact, brandColor: '#61DAFB', description: 'Build reusable interface pieces and keep interactive pages easier to organize.' },
+  { name: 'JavaScript', brandIcon: siJavascript, brandColor: '#F7DF1E', description: 'Handle the interactions behind menus, forms, and other parts of a page that respond to the user.' },
+  { name: 'HTML5', brandIcon: siHtml5, brandColor: '#E34F26', description: 'Use semantic elements to give a page a clear structure for browsers, assistive technology, and future edits.' },
+  { name: 'CSS3', brandIcon: siCss, brandColor: '#1572B6', description: 'Build layouts that adapt to different screen sizes, then refine the spacing, typography, and motion.' },
+  { name: 'Tailwind CSS', brandIcon: siTailwindcss, brandColor: '#06B6D4', description: 'Use utility classes and shared design tokens to build consistent layouts and adjust them quickly.' },
+  { name: 'WordPress', brandIcon: siWordpress, brandColor: '#21759B', description: 'Create and customize content-driven sites that are straightforward for the people who update them.' },
+  { name: 'Wix', brandIcon: siWix, brandColor: '#0C6EFC', description: 'Build responsive Wix sites and keep their pages and content easy to manage.' },
+  { name: 'E-commerce', Icon: ShoppingBag, description: 'Organize product pages and checkout so shoppers can find what they need and know what to do next.' },
+  { name: 'Shopify Custom Theme Design', brandIcon: siShopify, brandColor: '#95BF47', description: 'Three years of Shopify theme work, including custom storefront sections and responsive shopping details.' },
 ]
 
 const codeLines = [
@@ -24,7 +28,7 @@ const codeLines = [
   '  experience: 10,',
   "  tools: ['React', 'JavaScript'],",
   "  platforms: ['Shopify', 'WordPress'],",
-  "  focus: 'Thoughtful digital experiences',",
+  "  focus: 'Clear, responsive interfaces',",
   '}',
 ]
 
@@ -77,7 +81,7 @@ const freelancePackages = [
     name: 'Landing page',
     Icon: Code2,
     price: 15000,
-    description: 'A focused, polished page for a product, service, or campaign.',
+    description: 'A single page for one clear product, service, or campaign.',
     features: ['Single-page responsive build', 'Contact form integration', 'On-page SEO fundamentals'],
   },
   {
@@ -85,7 +89,7 @@ const freelancePackages = [
     name: 'Business website',
     Icon: Globe2,
     price: 35000,
-    description: 'A flexible multi-page site that gives your business room to grow.',
+    description: 'A small multi-page site for the main information your customers need.',
     features: ['Up to five core pages', 'WordPress or Wix setup', 'Responsive UI and SEO basics'],
   },
   {
@@ -93,7 +97,7 @@ const freelancePackages = [
     name: 'E-commerce store',
     Icon: ShoppingBag,
     price: 60000,
-    description: 'A product-first storefront with a considered path to checkout.',
+    description: 'An online store with a clear path from product pages to checkout.',
     features: ['Shopify or WordPress setup', 'Catalogue and checkout integration', 'Mobile-first storefront UI'],
   },
 ]
@@ -128,21 +132,28 @@ function useReveal() {
 
   useEffect(() => {
     const element = ref.current
-    if (!element) return
-    if (!('IntersectionObserver' in window)) {
-      element.classList.add('is-visible')
-      return
+    if (!element) return undefined
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
+
+    const animation = gsap.fromTo(element,
+      { autoAlpha: 0, y: 28 },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: element,
+          start: 'top 88%',
+          once: true,
+        },
+      },
+    )
+
+    return () => {
+      animation.scrollTrigger?.kill()
+      animation.kill()
     }
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible')
-        observer.unobserve(entry.target)
-      }
-    }, { threshold: 0.12, rootMargin: '0px 0px -36px 0px' })
-
-    observer.observe(element)
-    return () => observer.disconnect()
   }, [])
 
   return ref
@@ -160,7 +171,7 @@ function BrandIcon({ icon, color, size = 20 }) {
   )
 }
 
-function ThreeHeroScene() {
+function ThreeHeroScene({ theme }) {
   const mountRef = useRef(null)
 
   useEffect(() => {
@@ -175,16 +186,21 @@ function ThreeHeroScene() {
     renderer.setClearColor(0x000000, 0)
     mount.appendChild(renderer.domElement)
 
-    const accent = new THREE.Color('#baff45')
-    const softAccent = new THREE.Color('#65c7b2')
+    const accentHex = theme === 'light' ? '#566b48' : '#b7c28e'
+    const accent = new THREE.Color(accentHex)
+    const softAccent = new THREE.Color(theme === 'light' ? '#ad6d51' : '#d29474')
     const group = new THREE.Group()
+    const motionGroup = new THREE.Group()
+    motionGroup.position.set(-0.18, 0.08, -0.65)
+    motionGroup.scale.setScalar(0.62)
+    group.add(motionGroup)
     scene.add(group)
 
-    const core = new THREE.Mesh(new THREE.IcosahedronGeometry(1.45, 2), new THREE.MeshBasicMaterial({ color: accent, wireframe: true, transparent: true, opacity: 0.62 }))
-    const innerCore = new THREE.Mesh(new THREE.IcosahedronGeometry(0.92, 1), new THREE.MeshBasicMaterial({ color: softAccent, wireframe: true, transparent: true, opacity: 0.34 }))
-    group.add(core, innerCore)
+    const core = new THREE.Mesh(new THREE.IcosahedronGeometry(1.45, 2), new THREE.MeshBasicMaterial({ color: accent, wireframe: true, transparent: true, opacity: 0.38 }))
+    const innerCore = new THREE.Mesh(new THREE.IcosahedronGeometry(0.92, 1), new THREE.MeshBasicMaterial({ color: softAccent, wireframe: true, transparent: true, opacity: 0.26 }))
+    motionGroup.add(core, innerCore)
 
-    const ringMaterial = new THREE.MeshBasicMaterial({ color: accent, wireframe: true, transparent: true, opacity: 0.35 })
+    const ringMaterial = new THREE.MeshBasicMaterial({ color: accent, wireframe: true, transparent: true, opacity: 0.25 })
     const rings = [
       { rotation: [0.3, 0.2, 0.2], scale: 1.75 },
       { rotation: [1.1, 0.3, -0.4], scale: 2.05 },
@@ -193,7 +209,7 @@ function ThreeHeroScene() {
       const ring = new THREE.Mesh(new THREE.TorusGeometry(1.05, 0.012, 8, 96), ringMaterial)
       ring.rotation.set(...rotation)
       ring.scale.setScalar(scale)
-      group.add(ring)
+      motionGroup.add(ring)
       return ring
     })
 
@@ -214,25 +230,49 @@ function ThreeHeroScene() {
 
     const targetRotation = new THREE.Vector2()
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    let frameId
+    const hero = mount.closest('.hero')
+    const scrollAnimation = reducedMotion.matches || !hero ? null : gsap.timeline({
+      scrollTrigger: {
+        trigger: hero,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1,
+      },
+    }).to(group.rotation, { x: 0.42, y: 1.05, z: -0.12, ease: 'none' })
+    let frameId = null
+    let isVisible = false
 
     const resize = () => {
       const { width, height } = mount.getBoundingClientRect()
       if (!width || !height) return
       camera.aspect = width / height
+      camera.position.z = Math.max(7.4, 2.9 / (2 * camera.aspect * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))))
       camera.updateProjectionMatrix()
       renderer.setSize(width, height, false)
     }
     const onPointerMove = (event) => {
+      if (reducedMotion.matches) return
       const bounds = mount.getBoundingClientRect()
       targetRotation.set(-(((event.clientY - bounds.top) / bounds.height) * 2 - 1) * 0.22, (((event.clientX - bounds.left) / bounds.width) * 2 - 1) * 0.3)
     }
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        if (frameId !== null) window.cancelAnimationFrame(frameId)
+        frameId = null
+      } else if (isVisible && frameId === null && !reducedMotion.matches) {
+        animate()
+      }
+    }
     const animate = () => {
+      if (!isVisible || document.hidden) {
+        frameId = null
+        return
+      }
       frameId = window.requestAnimationFrame(animate)
       const motionScale = reducedMotion.matches ? 0 : 1
-      group.rotation.x += (targetRotation.x - group.rotation.x) * 0.035
-      group.rotation.y += (targetRotation.y - group.rotation.y) * 0.035
-      group.rotation.z += 0.0015 * motionScale
+      motionGroup.rotation.x += (targetRotation.x - motionGroup.rotation.x) * 0.035
+      motionGroup.rotation.y += (targetRotation.y - motionGroup.rotation.y) * 0.035
+      motionGroup.rotation.z += 0.0015 * motionScale
       core.rotation.y += 0.003 * motionScale
       innerCore.rotation.y -= 0.004 * motionScale
       rings.forEach((ring, index) => { ring.rotation.z += (0.001 + (index * 0.0007)) * motionScale })
@@ -241,14 +281,28 @@ function ThreeHeroScene() {
     }
 
     const observer = new ResizeObserver(resize)
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting
+      if (isVisible && !document.hidden && frameId === null && !reducedMotion.matches) animate()
+      if (!isVisible && frameId !== null) {
+        window.cancelAnimationFrame(frameId)
+        frameId = null
+      }
+    }, { rootMargin: '100px' })
     observer.observe(mount)
+    visibilityObserver.observe(mount)
     mount.addEventListener('pointermove', onPointerMove)
+    document.addEventListener('visibilitychange', onVisibilityChange)
     resize()
-    animate()
+    if (reducedMotion.matches) renderer.render(scene, camera)
 
     return () => {
-      window.cancelAnimationFrame(frameId)
+      if (frameId !== null) window.cancelAnimationFrame(frameId)
       observer.disconnect()
+      visibilityObserver.disconnect()
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+      scrollAnimation?.scrollTrigger?.kill()
+      scrollAnimation?.kill()
       mount.removeEventListener('pointermove', onPointerMove)
       scene.traverse((object) => {
         if (object.geometry) object.geometry.dispose()
@@ -257,7 +311,7 @@ function ThreeHeroScene() {
       renderer.dispose()
       renderer.domElement.remove()
     }
-  }, [])
+  }, [theme])
 
   return <div className="three-hero-scene" ref={mountRef} aria-hidden="true" />
 }
@@ -301,32 +355,54 @@ function Header({ theme, onThemeToggle }) {
   )
 }
 
-function Hero() {
+function Hero({ theme }) {
   return (
     <section className="hero page-shell" id="top">
+      <svg className="hero-waves" viewBox="0 0 1440 820" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path d="M-70 66 C95 252 184 601 478 716 C770 830 889 529 1072 344 C1212 202 1354 137 1510 82" />
+        <path d="M-74 98 C111 278 202 622 495 744 C790 866 917 554 1096 369 C1238 221 1376 159 1516 112" />
+      </svg>
       <div className="hero-copy">
-        <p className="eyebrow"><span className="eyebrow-line" /> LEAD FRONTEND DEVELOPER <span className="hero-location">/ KOLKATA, INDIA</span></p>
-        <h1>CODE THAT<br />FEELS <span>HUMAN.</span></h1>
+        <p className="eyebrow"><span className="eyebrow-line" /> REACT / SHOPIFY / WORDPRESS</p>
+        <h1>FRONTEND<br />DEVELOPER<br /><span>IN KOLKATA.</span></h1>
         <div className="hero-bottom">
-          <p>10+ years turning ambitious ideas into responsive, accessible web experiences. Thoughtful React builds, useful details, and a little more humanity in every interface.</p>
-          <a className="hero-link" href="#work">EXPLORE SELECTED WORK <ArrowIcon /></a>
+          <p>I've spent 10+ years building websites and online stores, from React interfaces to Shopify and WordPress projects.</p>
+          <a className="hero-link" href="#work">SEE MY WORK <ArrowIcon /></a>
         </div>
       </div>
       <div className="hero-visual" aria-label="Interactive three dimensional frontend developer visual">
-        <div className="visual-topline"><span>BUILD / SHIP / ITERATE</span><span>EST. 2014 — NOW</span></div>
         <div className="visual-photo">
-          <ThreeHeroScene />
+          <ThreeHeroScene theme={theme} />
+          <img
+            className="hero-character-image"
+            src="/images/hero-character.png"
+            alt="Illustration of a developer sitting in a chair and coding on a laptop"
+          />
           <span className="visual-grid" aria-hidden="true" />
-          <span className="visual-scanline" aria-hidden="true" />
-          <span className="visual-top-chip"><i /> CREATIVE SYSTEM / 01</span>
-          <span className="visual-stamp">BUILT<br />WITH<br /><i>INTENT.</i></span>
-          <span className="visual-code"><span>const</span> experience = <b>"thoughtful"</b>;</span>
-          <span className="visual-profile-card"><small>ARINDAM / FRONTEND SYSTEMS</small><strong>10<span>+</span></strong><b>YEARS OF MAKING<br />DIGITAL FEEL HUMAN</b></span>
-          <span className="visual-side-label">INTERFACE<br />MOTION<br />DETAIL</span>
-          <span className="visual-orbit-badge">MOVE<br /><b>TO EXPLORE</b></span>
+          <span className="visual-top-chip"><i /> FRONTEND / UI / E-COMMERCE</span>
         </div>
-        <div className="visual-bottom"><span>REACT / JAVASCRIPT / ACCESSIBILITY</span><span>10+ YEARS <b>↗</b></span></div>
-        <span className="visual-index">INDEPENDENT BY NATURE</span>
+      </div>
+      <div className="hero-side-copy">
+        <p className="hero-side-kicker"><span /> HOW I APPROACH THE WORK</p>
+        <h2 className="hero-side-lead">Make the next step <span>easy to find.</span></h2>
+        <p className="hero-side-description">I build responsive interfaces for business websites, online stores, and other web projects.</p>
+        <p className="hero-side-focus">CLEAR LAYOUTS <i /> RESPONSIVE UI <i /> ACCESSIBILITY</p>
+        <a className="hero-side-link" href="#about">A LITTLE ABOUT ME <ArrowIcon /></a>
+      </div>
+      <div className="hero-tech-strip" role="group" aria-label="Technologies I work with">
+        {skills.map(({ name, brandIcon, Icon }, index) => (
+          <span
+            className="hero-tech-badge"
+            role="img"
+            aria-label={name}
+            tabIndex={0}
+            style={{ '--tech-index': index, '--tech-count': skills.length }}
+            key={name}
+          >
+            {brandIcon ? <BrandIcon icon={brandIcon} color="currentColor" size={20} /> : <Icon size={20} strokeWidth={1.8} aria-hidden="true" />}
+            <span className="hero-tech-tooltip" aria-hidden="true">{name}</span>
+          </span>
+        ))}
       </div>
       <a className="scroll-cue" href="#about"><span /> SCROLL TO EXPLORE</a>
     </section>
@@ -340,15 +416,15 @@ function About() {
     <section className="about-section section-shell reveal" id="about" ref={revealRef}>
       <div className="section-marker"><span>01</span><span>ABOUT</span></div>
       <div className="about-content">
-        <div className="section-title-row"><h2>FROM BRIEF<br />TO <span>BROWSER.</span></h2><span className="title-aside">THOUGHTFUL FRONTEND.<br />BUILT FOR THE REAL WORLD.</span></div>
-        <p className="about-copy">I'm Arindam Chakraborty, a lead frontend developer with more than a decade of experience bringing digital products to life. I build responsive interfaces, shape reusable systems, and lead teams toward work that feels considered from the first tap to the final detail.</p>
-        <div className="capability-strip"><span>10+ YEARS BUILDING FOR THE WEB</span><span>TEAM & TECHNICAL LEADERSHIP</span><span>PERFORMANCE, UX, DETAIL</span></div>
+        <div className="section-title-row"><h2>A LITTLE<br />ABOUT MY <span>WORK.</span></h2><span className="title-aside">FRONTEND DEVELOPMENT.<br />KOLKATA, INDIA.</span></div>
+        <p className="about-copy">I'm Arindam Chakraborty, a lead frontend developer based in Kolkata. For more than 10 years, I've worked across React interfaces, business websites, and e-commerce. I currently lead frontend work at Graphē. My work also includes content platforms and responsive UI for phones, tablets, and desktops.</p>
+        <div className="capability-strip"><span>10+ YEARS IN FRONTEND</span><span>TEAM LEADERSHIP</span><span>REACT · SHOPIFY · WORDPRESS</span></div>
       </div>
     </section>
   )
 }
 
-function ProjectCard({ project, index, onOpen }) {
+function ProjectCard({ project, onOpen }) {
   const revealRef = useReveal()
 
   const tiltCard = (event) => {
@@ -366,7 +442,7 @@ function ProjectCard({ project, index, onOpen }) {
   }
 
   return (
-    <article className="project-card reveal" ref={revealRef} style={{ '--reveal-delay': `${(index % 2) * 140}ms` }}>
+    <article className="project-card reveal" ref={revealRef}>
       <button className="project-card-button" type="button" onClick={() => onOpen(project)} onPointerMove={tiltCard} onPointerLeave={resetCardTilt} aria-label={`View ${project.title} project details`}>
       <span className="project-image">
         <img src={project.image} alt={project.alt} loading="lazy" decoding="async" />
@@ -382,7 +458,9 @@ function ProjectCard({ project, index, onOpen }) {
 function Projects() {
   const revealRef = useReveal()
   const dialogRef = useRef(null)
+  const sliderRef = useRef(null)
   const [selectedProject, setSelectedProject] = useState(null)
+  const [activeProject, setActiveProject] = useState(0)
 
   useEffect(() => {
     if (selectedProject && !dialogRef.current?.open) dialogRef.current?.showModal()
@@ -392,14 +470,58 @@ function Projects() {
     if (event.target === dialogRef.current) dialogRef.current.close()
   }
 
+  useEffect(() => {
+    const slider = sliderRef.current
+    if (!slider) return undefined
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    const updatePosition = () => {
+      const card = slider.children[0]
+      if (!card) return
+      const gap = Number.parseFloat(getComputedStyle(slider).gap) || 0
+      const distance = (card.getBoundingClientRect().width + gap) * activeProject
+
+      gsap.to(slider, {
+        x: -distance,
+        duration: reducedMotion ? 0 : 0.72,
+        ease: 'power3.out',
+        overwrite: true,
+      })
+    }
+
+    const resizeObserver = new ResizeObserver(updatePosition)
+    resizeObserver.observe(slider)
+    updatePosition()
+
+    return () => {
+      resizeObserver.disconnect()
+      gsap.killTweensOf(slider)
+    }
+  }, [activeProject])
+
+  const moveProject = (direction) => {
+    setActiveProject((current) => Math.min(Math.max(current + direction, 0), projects.length - 1))
+  }
+
   return (
     <section className="work-section section-shell reveal" id="work" ref={revealRef}>
       <div className="section-marker"><span>02</span><span>SELECTED PROJECTS</span></div>
-      <div className="work-heading"><h2>THE WORK<br /><span>SPEAKS.</span></h2><p>Six launches across engineering, fashion, commerce, culture, and community. Open a project for its brief and platform details. Photography is illustrative.</p></div>
-      <div className="project-grid" aria-label="Portfolio projects">
-        {projects.map((project, index) => (
-          <ProjectCard project={project} index={index} key={project.number} onOpen={setSelectedProject} />
-        ))}
+      <div className="work-heading"><h2>A FEW<br /><span>PROJECTS.</span></h2><p>A selection of ten projects across B2B, retail, healthcare, and nonprofit work. Open one to see the platforms and a little about the work.</p></div>
+      <div className="project-carousel-toolbar">
+        <span className="project-carousel-status" aria-live="polite"><b>{String(activeProject + 1).padStart(2, '0')}</b> / {String(projects.length).padStart(2, '0')}</span>
+        <div className="project-carousel-progress" aria-hidden="true"><span style={{ transform: `scaleX(${(activeProject + 1) / projects.length})` }} /></div>
+        <div className="project-carousel-controls">
+          <button type="button" onClick={() => moveProject(-1)} disabled={activeProject === 0} aria-label="Previous project"><ChevronLeft size={18} /></button>
+          <button type="button" onClick={() => moveProject(1)} disabled={activeProject === projects.length - 1} aria-label="Next project"><ChevronRight size={18} /></button>
+        </div>
+      </div>
+      <div className="project-slider-viewport" aria-label="Portfolio projects">
+        <div className="project-grid project-slider-track" ref={sliderRef}>
+          {projects.map((project) => (
+            <ProjectCard project={project} key={project.number} onOpen={setSelectedProject} />
+          ))}
+        </div>
       </div>
       <dialog className="project-dialog" ref={dialogRef} aria-labelledby="project-dialog-title" onClick={closeFromBackdrop} onClose={() => setSelectedProject(null)}>
         {selectedProject && (
@@ -471,8 +593,8 @@ function Toolkit() {
         </div>
         <div className="toolkit-layout">
           <div className="toolkit-copy">
-            <h2 id="toolkit-title">WHAT I DO<span>?</span></h2>
-            <p>A decade of hands-on work across frontend engineering, content platforms, performance, and e-commerce.</p>
+            <h2 id="toolkit-title">TOOLS I <span>USE.</span></h2>
+            <p>These are the tools I use for frontend work, business sites, and online stores. Open a row for a few details.</p>
             <ul className="skill-list">
               {skills.map(({ name, Icon, description, brandIcon, brandColor }, index) => {
                 const isExpanded = expandedSkill === index
@@ -506,7 +628,7 @@ function Toolkit() {
             </ul>
           </div>
           <div className="toolkit-code" aria-hidden="true">
-            <div className="toolkit-code-header"><span><i /> LIVE CODE / PROFILE.JS</span><span>REACT</span></div>
+            <div className="toolkit-code-header"><span><i /> PROFILE / PROFILE.JS</span><span>REACT</span></div>
             <pre>
               {codeLines.map((line, index) => (
                 <span className={activeCodeLine === index ? 'toolkit-code-line is-active' : 'toolkit-code-line'} key={line}>
@@ -535,13 +657,13 @@ function FreelancePricing() {
       <div className="freelance-inner section-shell reveal" ref={revealRef}>
         <div className="section-marker"><span>04</span><span>FREELANCE SERVICES</span></div>
         <div className="freelance-heading">
-          <div><p className="freelance-eyebrow">CLEAR STARTING POINTS</p><h2 id="freelance-title">GOOD WORK.<br /><span>FAIR SCOPE.</span></h2></div>
-          <p>Choose a starting package, then we’ll tailor the details to your goals, content, and integrations.</p>
+          <div><p className="freelance-eyebrow">PROJECT ESTIMATES</p><h2 id="freelance-title">STARTING<br /><span>PRICES.</span></h2></div>
+          <p>These are starting estimates, not fixed quotes. Share a few details about the project and I can confirm the scope, schedule, and cost.</p>
         </div>
         <div className="currency-picker-row">
           <div>
             <span className="currency-picker-label">VIEW PRICES IN</span>
-            <span className="currency-picker-caption">Choose your preferred country and currency</span>
+            <span className="currency-picker-caption">Choose a currency for the estimate</span>
           </div>
           <div className="currency-picker-controls">
             <label className="currency-picker">
@@ -572,7 +694,7 @@ function FreelancePricing() {
             </article>
           ))}
         </div>
-        <p className="freelance-note">Standard Indian expert pricing is shown by default. Priority delivery adds 25%; extended timelines reduce the starting price by 10%. Currency conversions are indicative.</p>
+        <p className="freelance-note">Prices start in INR; converted amounts are approximate. Priority delivery adds 25%, while an extended timeline reduces the starting price by 10%.</p>
       </div>
     </section>
   )
@@ -583,9 +705,18 @@ function Contact() {
     <section className="contact-section" id="contact">
       <div className="contact-inner section-shell">
         <div className="section-marker"><span>06</span><span>THE NEXT STEP</span></div>
-        <p className="contact-prelude">HAVE AN IDEA?</p>
-        <h2>LET'S MAKE<br /><span>IT HAPPEN.</span></h2>
-        <div className="contact-bottom"><p>Have a demanding brief and an appetite for details? Let's turn it into an experience worth spending time with.</p><a className="contact-button" href="mailto:arindam23@live.com?subject=Frontend%20project%20inquiry">START A CONVERSATION <ArrowIcon /></a></div>
+        <p className="contact-prelude">HAVE A PROJECT?</p>
+        <h2>LET'S TALK<br /><span>ABOUT IT.</span></h2>
+        <div className="contact-bottom">
+          <p>If you're planning a website or online store, email me a few details about what you need and when you'd like to get started.</p>
+          <div className="contact-actions">
+            <a className="contact-button" href="mailto:arindam23@live.com?subject=Frontend%20project%20inquiry">EMAIL ME ABOUT YOUR PROJECT <ArrowIcon /></a>
+            <a className="linkedin-link" href="https://www.linkedin.com/in/arindam-chakraborty-28480411a/?isSelfProfile=true" target="_blank" rel="noreferrer">
+              <span className="linkedin-mark" aria-hidden="true">in</span>
+              LINKEDIN PROFILE <ArrowIcon />
+            </a>
+          </div>
+        </div>
         <span className="contact-orbit" aria-hidden="true">A<span>.</span></span>
       </div>
     </section>
@@ -675,7 +806,7 @@ function Reviews() {
         <div className="reviews-intro">
           <p className="reviews-eyebrow">CLIENT FEEDBACK</p>
           <h2 id="reviews-title">KIND WORDS<br /><span>FROM CLIENTS.</span></h2>
-          <p>Client feedback from projects across e-commerce, React, WordPress, Shopify, and website UI/UX.</p>
+          <p>A few notes from people I've worked with on e-commerce, React, WordPress, and Shopify projects.</p>
           <div className="reviews-rating-summary">
             <span className="reviews-rating-number">{reviews[activeReview].rating.toFixed(1)}</span>
             <span className="reviews-rating-detail">
@@ -685,7 +816,7 @@ function Reviews() {
               <span className="reviews-rating-caption">CLIENT RATING · {reviews[activeReview].project}</span>
             </span>
           </div>
-          <div className="reviews-note"><Star size={16} fill="currentColor" aria-hidden="true" /><span>Feedback from completed client projects.</span></div>
+          <div className="reviews-note"><Star size={16} fill="currentColor" aria-hidden="true" /><span>Notes from completed projects.</span></div>
           <div className="reviews-controls">
             <button type="button" aria-label="Previous review" onClick={() => changeReview(-1)}><ChevronLeft size={19} aria-hidden="true" /></button>
             <span>{String(activeReview + 1).padStart(2, '0')} <i>/</i> {String(reviews.length).padStart(2, '0')}</span>
@@ -701,7 +832,7 @@ function Footer() {
   return (
     <footer className="site-footer section-shell">
       <a className="wordmark" href="#top">A<span>.</span></a>
-      <p>BUILT WITH REACT. STYLED WITH CARE.</p>
+      <p>FRONTEND DEVELOPER · KOLKATA, INDIA</p>
       <a href="#top" className="back-top">BACK TO TOP ↑</a>
     </footer>
   )
@@ -720,6 +851,7 @@ function BottomNav() {
 }
 
 export default function Portfolio() {
+  const portfolioRef = useRef(null)
   const [theme, setTheme] = useState(() => {
     try {
       return localStorage.getItem('arindam-portfolio-theme') === 'light' ? 'light' : 'dark'
@@ -736,15 +868,36 @@ export default function Portfolio() {
       localStorage.setItem('arindam-portfolio-theme', theme)
     } catch {}
 
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#071923' : '#f8f8f4')
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#1d221c' : '#f6f1e7')
   }, [theme])
 
+  useEffect(() => {
+    const progress = portfolioRef.current?.querySelector('.scroll-progress')
+    if (!progress) return undefined
+
+    const animation = gsap.to(progress, {
+      scaleX: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: document.documentElement,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.2,
+      },
+    })
+
+    return () => {
+      animation.scrollTrigger?.kill()
+      animation.kill()
+    }
+  }, [])
+
   return (
-    <div className="portfolio-app" data-theme={theme}>
+    <div className="portfolio-app" data-theme={theme} ref={portfolioRef}>
       <div className="scroll-progress" aria-hidden="true" />
       <Header theme={theme} onThemeToggle={() => setTheme(current => current === 'dark' ? 'light' : 'dark')} />
       <main>
-        <Hero />
+        <Hero theme={theme} />
         <About />
         <Projects />
         <Toolkit />

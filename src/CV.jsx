@@ -63,7 +63,7 @@ export default function CV() {
           <div className="cv-card-copy">
             <span className="cv-years">10+ YEARS IN FRONTEND</span>
             <h2>LEAD FRONTEND<br /><span>DEVELOPER.</span></h2>
-            <p>Frontend engineering, team leadership, responsive UI, and e-commerce across React, Shopify, WordPress, Wix.</p>
+            <p>Frontend development, team leadership, and e-commerce work with React, Shopify, WordPress, and Wix.</p>
           </div>
           <div className="cv-card-action">
             <span className="cv-current-role">CURRENTLY AT GRAPHĒ<br />KOLKATA, INDIA</span>
@@ -93,7 +93,7 @@ export default function CV() {
 
           <section className="cv-block">
             <h3>SUMMARY</h3>
-            <p>Results-driven Lead Frontend Developer and Web Specialist with 10+ years of experience building responsive, accessible web applications. Experienced in leading frontend teams and delivering e-commerce and corporate websites with Shopify, WordPress, Wix, React, and JavaScript. Focused on UX, payment integrations, and cross-browser performance.</p>
+            <p>Lead frontend developer with 10+ years of experience building responsive websites and e-commerce projects. My work includes React, JavaScript, Shopify, WordPress, and Wix, along with frontend team leadership, payment integrations, and cross-browser performance.</p>
           </section>
 
           <section className="cv-block">
