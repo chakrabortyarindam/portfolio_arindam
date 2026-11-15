@@ -375,7 +375,7 @@ function Hero({ theme }) {
           <ThreeHeroScene theme={theme} />
           <img
             className="hero-character-image"
-            src="/images/hero-character.png"
+            src={`${import.meta.env.BASE_URL}images/hero-character.png`}
             alt="Illustration of a developer sitting in a chair and coding on a laptop"
           />
           <span className="visual-grid" aria-hidden="true" />
